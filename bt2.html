@@ -469,7 +469,7 @@
       const sessions = document.getElementById('sessions').value;
       // Ràng buộc: mã học phần phải bắt đầu bằng chữ cái
       if (!code) return alert('Nhập mã học phần!');
-      if (!/^[A-Za-z]/.test(code)) return alert('Mã học phần phải bắt đầu bằng chữ cái!');
+      if (!/^[A-Z]+[0-9]+$/.test(code)) return alert('Mã học phần phải bắt đầu bằng chữ cái in hoa (không dấu), theo sau là số. Ví dụ: KT203');
       // Không cho phép trùng mã học phần
       if (courses.some(c => c.code.toLowerCase() === code.toLowerCase())) return alert('Mã học phần đã tồn tại!');
       // Ràng buộc: tên học phần chỉ được chữ cái và khoảng trắng
@@ -532,7 +532,7 @@
       const coeff = document.getElementById('coefficient').value;
       const sessions = document.getElementById('sessions').value;
       if (!code) return alert('Nhập mã học phần!');
-      if (!/^[A-Za-z]/.test(code)) return alert('Mã học phần phải bắt đầu bằng chữ cái!');
+      if (!/^[A-Z]+[0-9]+$/.test(code)) return alert('Mã học phần phải bắt đầu bằng chữ cái in hoa (không dấu), theo sau là số. Ví dụ: KT203');
       // Ràng buộc: tên học phần chỉ được chữ cái và khoảng trắng
       if (!name) return alert('Nhập tên học phần!');
       if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(name)) return alert('Tên học phần chỉ được chứa chữ cái và khoảng trắng!');
