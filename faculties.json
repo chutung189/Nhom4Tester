@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Công nghệ thông tin",
+    "shortName": "CNTT",
+    "dean": "Chu Tùng",
+    "description": "Khoa CNTT"
+  },
+  {
+    "id": 2,
+    "name": "Kế toán",
+    "shortName": "KT",
+    "dean": "Phạm Việt Phương",
+    "description": "Khoa Kế toán"
+  },
+  {
+    "id": 3,
+    "name": "Du lịch",
+    "shortName": "DL",
+    "dean": "Nguyễn Hà Ninh",
+    "description": "Khoa du lịch"
+  },
+  {
+    "id": 4,
+    "name": "Quản trị kinh doanh",
+    "shortName": "QTKD",
+    "dean": "Nguyễn Phi Yến",
+    "description": "Khoa QTKD"
+  },
+  {
+    "id": 5,
+    "name": "Sinh học",
+    "shortName": "SH",
+    "dean": "Vũ Tuấn Kiên",
+    "description": "Khoa sinh học"
+  },
+  {
+    "id": 6,
+    "name": "Cơ diện từ",
+    "shortName": "CĐT",
+    "dean": "Chu Tùng",
+    "description": "Khoa cơ điện tử"
+  }
+]

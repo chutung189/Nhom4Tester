@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tính tiền dạy cho giáo viên</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --primary-color: #4e73df;
+      --secondary-color: #f8f9fc;
+      --success-color: #1cc88a;
+      --info-color: #36b9cc;
+      --warning-color: #f6c23e;
+      --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    }
+
+    body {
+      background: var(--secondary-color);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-card {
+      border: none;
+      border-radius: 0.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-header {
+      background: white;
+      border-bottom: 1px solid #e3e6f0;
+      border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .card-title {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #5a5c69;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 0.35rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #d1d3e2;
+    }
+
+    .btn-calculate {
+      transition: all 0.3s;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-calculate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+    }
+
+    .btn-info {
+      background-color: var(--info-color);
+      border-color: var(--info-color);
+    }
+
+    #result {
+      border-left: 4px solid var(--primary-color);
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+
+    .result-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .result-value {
+      font-weight: 600;
+      color: #5a5c69;
+    }
+
+    .highlight {
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    .teacher-select-container {
+      position: relative;
+    }
+
+    .teacher-select-container::after {
+      content: "\F138";
+      font-family: "bootstrap-icons";
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .btn-calculate {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-4">
+    <div class="card main-card shadow">
+      <div class="card-header">
+        <h2 class="card-title mb-0">
+          <i class="bi bi-calculator-fill me-2"></i>Tính tiền dạy cho giáo viên
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="teacherSelect" class="form-label">
+              <i class="bi bi-person-video3 me-1"></i>Chọn giáo viên
+            </label>
+            <div class="teacher-select-container">
+              <select id="teacherSelect" class="form-select">
+                <option value="">-- Chọn giáo viên --</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="ratePerPeriod" class="form-label">
+              <i class="bi bi-currency-exchange me-1"></i>Định mức tiền một tiết (VND)
+            </label>
+            <input type="number" id="ratePerPeriod" class="form-control" value="100000">
+          </div>
+        </div>
+
+        <div id="classSectionArea" style="display:none" class="mb-4">
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label for="classSelect" class="form-label">
+                <i class="bi bi-journal-bookmark me-1"></i>Chọn lớp học phần đã phân công
+              </label>
+              <select id="classSelect" class="form-select"></select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end mb-3">
+              <button class="btn btn-info btn-calculate" onclick="calculateSalaryForClass()">
+                <i class="bi bi-calculator me-1"></i>Tính tiền lớp này
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <button class="btn btn-success btn-calculate flex-grow-1" onclick="calculateSalaryForAll()">
+            <i class="bi bi-cash-stack me-1"></i>Tính tổng tiền tất cả lớp
+          </button>
+        </div>
+
+        <div id="result" class="mb-3" style="display: none;">
+          <h4 class="result-title mb-3">
+            <i class="bi bi-file-earmark-text me-2"></i>Kết quả tính toán
+          </h4>
+          <div id="resultContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOÀN BỘ PHẦN JAVASCRIPT GIỮ NGUYÊN -->
+  <script>
+    let teachers = [], degrees = [], courses = [], classSections = [], lecturerAssignments = [];
+
+    async function fetchAllData() {
+      const [gv, deg, cs, cl, la] = await Promise.all([
+        fetch('teachers.json').then(r => r.json()),
+        fetch('degrees.json').then(r => r.json()),
+        fetch('http://localhost:3000/api/courses').then(r => r.json()),
+        fetch('http://localhost:3000/api/classsections').then(r => r.json()),
+        fetch('http://localhost:3000/api/lecturerassignments').then(r => r.json())
+      ]);
+      teachers = gv;
+      degrees = deg;
+      courses = cs;
+      classSections = cl;
+      lecturerAssignments = la;
+      updateTeacherSelect();
+    }
+
+    function updateTeacherSelect() {
+      const sel = document.getElementById('teacherSelect');
+      sel.innerHTML = '<option value="">-- Chọn giáo viên --</option>';
+      teachers.forEach(gv => {
+        sel.innerHTML += `<option value="${gv.ma}">${gv.ten} (${gv.ma})</option>`;
+      });
+      sel.onchange = onTeacherChange;
+    }
+
+    function onTeacherChange() {
+      const teacherId = document.getElementById('teacherSelect').value;
+      const area = document.getElementById('classSectionArea');
+      const resultDiv = document.getElementById('result');
+
+      if (!teacherId) {
+        area.style.display = 'none';
+        resultDiv.style.display = 'none';
+        return;
+      }
+
+      const teacher = teachers.find(gv => gv.ma === teacherId);
+      const assigned = lecturerAssignments.filter(a => a.name.includes(teacher.ten));
+
+      const sel = document.getElementById('classSelect');
+      sel.innerHTML = '';
+      assigned.forEach(a => {
+        const cls = classSections.find(c => c.code === a.classCode);
+        if (cls) {
+          const course = courses.find(c => c.code === cls.courseCode);
+          sel.innerHTML += `<option value="${cls.code}">${cls.code} - ${course ? course.name : ''}</option>`;
+        }
+      });
+
+      area.style.display = assigned.length ? 'block' : 'none';
+      resultDiv.style.display = 'none';
+    }
+
+    function getDegreeFactor(teacher) {
+      if (!teacher || !teacher.bangcap) return 1.0;
+      const teacherDegree = teacher.bangcap.toLowerCase();
+      let deg = degrees.find(d => d.shortName.toLowerCase() === teacherDegree);
+      if (!deg && degrees[0] && degrees[0].name) {
+        deg = degrees.find(d => d.name.toLowerCase() === teacherDegree);
+      }
+      return deg ? parseFloat(deg.heso) || 1.0 : 1.0;
+    }
+
+    function calculateSalaryForClass() {
+      const teacherId = document.getElementById('teacherSelect').value;
+      const classCode = document.getElementById('classSelect').value;
+      const rate = parseFloat(document.getElementById('ratePerPeriod').value);
+
+      if (!teacherId || !classCode || isNaN(rate)) {
+        alert('Vui lòng chọn đủ thông tin.');
+        return;
+      }
+
+      const teacher = teachers.find(gv => gv.ma === teacherId);
+      const cls = classSections.find(c => c.code === classCode);
+      const course = courses.find(c => c.code === cls.courseCode);
+
+      const degreeFactor = getDegreeFactor(teacher);
+      const sessions = course ? parseInt(course.sessions) : 0;
+      const total = rate * degreeFactor * sessions;
+
+      const resultDiv = document.getElementById('result');
+      const resultContent = document.getElementById('resultContent');
+
+      resultContent.innerHTML = `
+        <div class="mb-3">
+          <span class="result-value">Giáo viên: </span>
+          <span class="highlight">${teacher.ten}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Lớp: </span>
+          <span class="highlight">${classCode} - ${course ? course.name : ''}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Số tiết: </span>
+          <span class="highlight">${sessions}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Hệ số bằng cấp: </span>
+          <span class="highlight">${degreeFactor}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Tiền một tiết: </span>
+          <span class="highlight">${rate.toLocaleString('vi-VN')} VND</span>
+        </div>
+        <div class="mb-3 pt-3 border-top">
+          <span class="result-value">Tổng tiền: </span>
+          <span class="highlight" style="font-size:1.25rem">${total.toLocaleString('vi-VN')} VND</span>
+        </div>
+      `;
+
+      resultDiv.style.display = 'block';
+    }
+
+    function calculateSalaryForAll() {
+      const teacherId = document.getElementById('teacherSelect').value;
+      const rate = parseFloat(document.getElementById('ratePerPeriod').value);
+
+      if (!teacherId || isNaN(rate)) {
+        alert('Vui lòng chọn giáo viên và nhập định mức.');
+        return;
+      }
+
+      const teacher = teachers.find(gv => gv.ma === teacherId);
+      const assigned = lecturerAssignments.filter(a => a.name.includes(teacher.ten));
+      let total = 0;
+      let html = `
+        <div class="mb-3">
+          <span class="result-value">Giáo viên: </span>
+          <span class="highlight">${teacher.ten}</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Lớp</th>
+                <th>Học phần</th>
+                <th>Số tiết</th>
+                <th>Hệ số</th>
+                <th>Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      assigned.forEach(a => {
+        const cls = classSections.find(c => c.code === a.classCode);
+        if (!cls) return;
+
+        const course = courses.find(c => c.code === cls.courseCode);
+        const degreeFactor = getDegreeFactor(teacher);
+        const sessions = course ? parseInt(course.sessions) : 0;
+        const subtotal = rate * degreeFactor * sessions;
+        total += subtotal;
+
+        html += `
+          <tr>
+            <td>${cls.code}</td>
+            <td>${course ? course.name : ''}</td>
+            <td>${sessions}</td>
+            <td>${degreeFactor}</td>
+            <td>${subtotal.toLocaleString('vi-VN')} VND</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+        <div class="pt-3 border-top text-end">
+          <span class="result-value me-3">Tổng cộng:</span>
+          <span class="highlight" style="font-size:1.25rem">${total.toLocaleString('vi-VN')} VND</span>
+        </div>
+      `;
+
+      const resultDiv = document.getElementById('result');
+      const resultContent = document.getElementById('resultContent');
+      resultContent.innerHTML = html;
+      resultDiv.style.display = 'block';
+
+      setTimeout(() => {
+        saveSalaryData({
+          name: teacher.ten,
+          teacherId: teacher.ma,
+          totalPeriods: assigned.reduce((sum, a) => {
+            const cls = classSections.find(c => c.code === a.classCode);
+            const course = cls ? courses.find(c => c.code === cls.courseCode) : null;
+            return sum + (course ? parseInt(course.sessions) : 0);
+          }, 0),
+          rate: rate,
+          degreeFactor: getDegreeFactor(teacher),
+          total: total
+        });
+      }, 1);
+    }
+
+    async function saveSalaryData(salaryData) {
+      await fetch('http://localhost:3000/api/salary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(salaryData)
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', fetchAllData);
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

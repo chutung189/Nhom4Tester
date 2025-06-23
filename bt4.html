@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo tiền dạy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #4e73df;
+      --secondary-color: #f8f9fc;
+      --success-color: #1cc88a;
+      --info-color: #36b9cc;
+      --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    }
+
+    body {
+      background: var(--secondary-color);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-card {
+      border: none;
+      border-radius: 0.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-header {
+      background: white;
+      border-bottom: 1px solid #e3e6f0;
+      border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .card-title {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .filter-section {
+      background: #f8f9fc;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #5a5c69;
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+    }
+
+    .btn-export {
+      background-color: white;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+      transition: all 0.3s;
+    }
+
+    .btn-export:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .table thead th {
+      background: var(--primary-color);
+      color: white;
+      border-bottom: none;
+      position: sticky;
+      top: 0;
+    }
+
+    .table td {
+      vertical-align: middle;
+    }
+
+    .total-row {
+      background-color: rgba(78, 115, 223, 0.1);
+      font-weight: 600;
+    }
+
+    .badge-primary {
+      background-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .filter-section .col-md-4 {
+        margin-bottom: 1rem;
+      }
+
+      .btn-group {
+        width: 100%;
+      }
+
+      .btn-group .btn {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-4">
+    <div class="card main-card shadow">
+      <div class="card-header">
+        <h2 class="card-title mb-0">
+          <i class="bi bi-file-earmark-bar-graph-fill me-2"></i>Báo cáo tiền dạy
+        </h2>
+      </div>
+      <div class="card-body">
+        <!-- Filter Section -->
+        <div class="filter-section">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="filterType" class="form-label">
+                <i class="bi bi-filter-circle me-1"></i>Loại báo cáo
+              </label>
+              <select id="filterType" class="form-select" onchange="updateFilterFields()">
+                <option value="all">Toàn trường</option>
+                <option value="teacher">Theo giáo viên</option>
+                <option value="department">Theo khoa</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3" id="teacherFilter" style="display: none;">
+              <label for="teacherName" class="form-label">
+                <i class="bi bi-person-video3 me-1"></i>Giáo viên
+              </label>
+              <select id="teacherName" class="form-select"></select>
+            </div>
+
+            <div class="col-md-4 mb-3" id="departmentFilter" style="display: none;">
+              <label for="departmentName" class="form-label">
+                <i class="bi bi-building me-1"></i>Khoa
+              </label>
+              <select id="departmentName" class="form-select"></select>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <div class="mb-2">
+              <span id="reportSummary" class="badge badge-primary bg-primary p-2">
+                Chọn loại báo cáo và nhấn "Thống kê"
+              </span>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-success me-2" onclick="generateReport()">
+                <i class="bi bi-graph-up me-1"></i>Thống kê
+              </button>
+              <button class="btn btn-export" onclick="exportReportToExcel()">
+                <i class="bi bi-file-earmark-excel me-1"></i>Xuất Excel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Table -->
+        <div class="table-responsive">
+          <table id="reportTable" class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th>Tên GV</th>
+                <th>Khoa</th>
+                <th>Số tiết</th>
+                <th>Tiền/tiết</th>
+                <th>Hệ số</th>
+                <th>Tổng tiền</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot id="reportFooter" style="display: none;">
+              <tr class="total-row">
+                <td colspan="2" class="text-end">Tổng cộng:</td>
+                <td id="totalPeriods">0</td>
+                <td>-</td>
+                <td>-</td>
+                <td id="totalAmount">0 VND</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOÀN BỘ PHẦN JAVASCRIPT GIỮ NGUYÊN -->
+  <script>
+    let teachers = [], faculties = [], salaryData = [];
+
+    async function fetchAllData() {
+      const [gv, fac, sal] = await Promise.all([
+        fetch('teachers.json').then(r => r.json()),
+        fetch('faculties.json').then(r => r.json()),
+        fetch('salary.json').then(r => r.json())
+      ]);
+      teachers = gv;
+      faculties = fac;
+      salaryData = sal;
+      renderFacultyOptions();
+      renderTeacherOptions();
+    }
+
+    function renderFacultyOptions() {
+      const select = document.getElementById('departmentName');
+      if (!select) return;
+      select.innerHTML = '';
+      faculties.forEach(fac => {
+        const option = document.createElement('option');
+        option.value = fac.shortName || fac.name || fac.id;
+        option.textContent = fac.name;
+        select.appendChild(option);
+      });
+    }
+
+    function renderTeacherOptions() {
+      const select = document.getElementById('teacherName');
+      if (!select) return;
+      select.innerHTML = '';
+      const teacherIdsInSalary = new Set(salaryData.map(item => item.teacherId));
+      const filteredTeachers = teachers.filter(t => teacherIdsInSalary.has(t.ma));
+      filteredTeachers.forEach(t => {
+        const option = document.createElement('option');
+        option.value = t.ma;
+        option.textContent = t.ten;
+        select.appendChild(option);
+      });
+    }
+
+    function getFacultyShortName(facultyIdOrName) {
+      let fac = faculties.find(f => f.id === facultyIdOrName || f.name === facultyIdOrName || f.shortName === facultyIdOrName);
+      if (!fac && typeof facultyIdOrName === 'number') fac = faculties.find(f => f.id === Number(facultyIdOrName));
+      return fac ? fac.shortName : facultyIdOrName;
+    }
+
+    function updateFilterFields() {
+      const type = document.getElementById('filterType').value;
+      document.getElementById('teacherFilter').style.display = type === 'teacher' ? 'block' : 'none';
+      document.getElementById('departmentFilter').style.display = type === 'department' ? 'block' : 'none';
+      document.getElementById('reportSummary').textContent = type === 'all' ? 'Báo cáo toàn trường'
+        : type === 'teacher' ? 'Chọn giáo viên và nhấn "Thống kê"'
+          : 'Chọn khoa và nhấn "Thống kê"';
+    }
+
+    function generateReport() {
+      const type = document.getElementById('filterType').value;
+      const tbody = document.querySelector('#reportTable tbody');
+      const footer = document.getElementById('reportFooter');
+      tbody.innerHTML = '';
+      footer.style.display = 'none';
+
+      let filteredSalary = salaryData;
+      let reportTitle = 'Báo cáo toàn trường';
+
+      if (type === 'teacher') {
+        const selectedId = document.getElementById('teacherName').value;
+        filteredSalary = salaryData.filter(item => String(item.teacherId) === String(selectedId));
+        const teacher = teachers.find(t => t.ma === selectedId);
+        reportTitle = `Báo cáo giáo viên: ${teacher ? teacher.ten : ''}`;
+      }
+
+      if (type === 'department') {
+        const dept = document.getElementById('departmentName').value;
+        const teacherIds = teachers.filter(t => getFacultyShortName(t.khoa) === dept).map(t => t.ma);
+        filteredSalary = salaryData.filter(item => teacherIds.includes(item.teacherId));
+        const faculty = faculties.find(f => getFacultyShortName(f.shortName) === dept);
+        reportTitle = `Báo cáo khoa: ${faculty ? faculty.name : dept}`;
+      }
+
+      document.getElementById('reportSummary').textContent = reportTitle;
+
+      if (filteredSalary.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Không có dữ liệu</td></tr>';
+        return;
+      }
+
+      let totalPeriods = 0;
+      let totalAmount = 0;
+
+      filteredSalary.forEach(item => {
+        const teacher = teachers.find(t => t.ma === item.teacherId);
+        const dept = teacher ? getFacultyShortName(teacher.khoa) : '';
+
+        totalPeriods += item.totalPeriods || item.periods || 0;
+        totalAmount += item.total || 0;
+
+        const row = `
+          <tr>
+            <td>${item.name}</td>
+            <td>${dept}</td>
+            <td>${item.totalPeriods || item.periods || 0}</td>
+            <td>${(item.rate || 100000).toLocaleString('vi-VN')}</td>
+            <td>${item.degreeFactor || item.factor || 1.0}</td>
+            <td>${(item.total || 0).toLocaleString('vi-VN')} VND</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+
+      if (filteredSalary.length > 1) {
+        footer.style.display = '';
+        document.getElementById('totalPeriods').textContent = totalPeriods;
+        document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('vi-VN') + ' VND';
+      }
+    }
+
+    function exportReportToExcel() {
+      const table = document.getElementById('reportTable');
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Báo cáo tiền dạy" });
+      XLSX.writeFile(wb, 'bao_cao_tien_day.xlsx');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchAllData();
+      document.getElementById('filterType').addEventListener('change', updateFilterFields);
+      document.getElementById('teacherName').addEventListener('change', () => { });
+      document.getElementById('departmentName').addEventListener('change', () => { });
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

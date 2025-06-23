@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Tiến sĩ",
+    "shortName": "TS",
+    "description": "Bằng tiến sĩ",
+    "heso": 1.7
+  },
+  {
+    "id": 2,
+    "name": "Thạc sĩ",
+    "shortName": "ThS",
+    "description": "Bằng thạc sĩ",
+    "heso": 1.5
+  },
+  {
+    "id": 3,
+    "name": "Cử nhân",
+    "shortName": "CN",
+    "description": "Bằng cử nhân",
+    "heso": 1.3
+  },
+  {
+    "id": 4,
+    "name": "Đại hoc",
+    "shortName": "ĐH",
+    "description": "Bằng đại học",
+    "heso": 1
+  }
+]

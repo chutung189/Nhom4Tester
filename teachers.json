@@ -1,0 +1,74 @@
+[
+  {
+    "ma": "GV001",
+    "ten": "Chu Tùng",
+    "ns": "2000-09-18",
+    "sdt": "0954234219",
+    "email": "chutung@gmail.com",
+    "khoa": "CNTT",
+    "bangcap": "TS"
+  },
+  {
+    "ma": "GV002",
+    "ten": "Phạm Việt Phương",
+    "ns": "2000-02-02",
+    "sdt": "0123456782",
+    "email": "vietphuong@gmail.com",
+    "khoa": "KT",
+    "bangcap": "ThS"
+  },
+  {
+    "ma": "GV003",
+    "ten": "Nguyễn Hà Ninh",
+    "ns": "2000-09-12",
+    "sdt": "0123456789",
+    "email": "haninh@gmail.com",
+    "khoa": "DL",
+    "bangcap": "CN"
+  },
+  {
+    "ma": "GV004",
+    "ten": "Nguyễn Phi Yến",
+    "ns": "2000-05-23",
+    "sdt": "0123456789",
+    "email": "phiyen@gmail.com",
+    "khoa": "QTKD",
+    "bangcap": "ĐH"
+  },
+  {
+    "ma": "GV005",
+    "ten": "Vũ Tuấn Kiên",
+    "ns": "2000-02-02",
+    "sdt": "0906523231",
+    "email": "tuankien@gmail.com",
+    "khoa": "SH",
+    "bangcap": "ĐH"
+  },
+  {
+    "ma": "GV006",
+    "ten": "Trịnh Đức Việt",
+    "ns": "2000-03-03",
+    "sdt": "0906523224",
+    "email": "ducivet@gmail.com",
+    "khoa": "CNTT",
+    "bangcap": "ThS"
+  },
+  {
+    "ma": "GV007",
+    "ten": "Nguyễn Minh Tuấn",
+    "ns": "2000-04-04",
+    "sdt": "0906523227",
+    "email": "minhtuan@gmail.com",
+    "khoa": "QTKD",
+    "bangcap": "CN"
+  },
+  {
+    "ma": "GV008",
+    "ten": "Lê Văn Nghiêm",
+    "ns": "2000-05-05",
+    "sdt": "0906523229",
+    "email": "nghiemle@gmail.com",
+    "khoa": "CNTT",
+    "bangcap": "TS"
+  }
+]

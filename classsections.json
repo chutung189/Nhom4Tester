@@ -1,0 +1,52 @@
+[
+  {
+    "code": "CT101-01",
+    "courseCode": "CT101",
+    "students": 50
+  },
+  {
+    "code": "CT101-02",
+    "courseCode": "CT101",
+    "students": 50
+  },
+  {
+    "code": "CT101-03",
+    "courseCode": "CT101",
+    "students": 40
+  },
+  {
+    "code": "CT201-01",
+    "courseCode": "CT201",
+    "students": 20
+  },
+  {
+    "code": "CT301-01",
+    "courseCode": "CT301",
+    "students": 25
+  },
+  {
+    "code": "CT201-02",
+    "courseCode": "CT201",
+    "students": 60
+  },
+  {
+    "code": "KT101-01",
+    "courseCode": "KT101",
+    "students": 10
+  },
+  {
+    "code": "KT101-02",
+    "courseCode": "KT101",
+    "students": 10
+  },
+  {
+    "code": "CT301-02",
+    "courseCode": "CT301",
+    "students": 70
+  },
+  {
+    "code": "CT301-03",
+    "courseCode": "CT301",
+    "students": 70
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "code": "CT101",
+    "name": "Tin học đại cương",
+    "credits": "3",
+    "coeff": "3",
+    "sessions": "30"
+  },
+  {
+    "code": "CT201",
+    "name": "Cơ sở dữ liệu",
+    "credits": "3",
+    "coeff": "2",
+    "sessions": "30"
+  },
+  {
+    "code": "CT301",
+    "name": "Lập trình Web",
+    "credits": 3,
+    "coeff": 1,
+    "sessions": 30
+  },
+  {
+    "code": "KT101",
+    "name": "Pháp luật đại cương",
+    "credits": "2",
+    "coeff": "1",
+    "sessions": "20"
+  }
+]
