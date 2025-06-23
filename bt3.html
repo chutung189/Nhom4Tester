@@ -143,7 +143,8 @@
             <label for="ratePerPeriod" class="form-label">
               <i class="bi bi-currency-exchange me-1"></i>Định mức tiền một tiết (VND)
             </label>
-            <input type="number" id="ratePerPeriod" class="form-control" value="100000">
+            <input type="number" id="ratePerPeriod" class="form-control" value="100000" min="1" step="1"
+              oninput="if(this.value<1)this.value='';">
           </div>
         </div>
 
@@ -251,8 +252,8 @@
       const classCode = document.getElementById('classSelect').value;
       const rate = parseFloat(document.getElementById('ratePerPeriod').value);
 
-      if (!teacherId || !classCode || isNaN(rate)) {
-        alert('Vui lòng chọn đủ thông tin.');
+      if (!teacherId || !classCode || isNaN(rate) || rate < 1) {
+        alert('Vui lòng chọn đủ thông tin và định mức phải là số dương.');
         return;
       }
 
@@ -301,8 +302,8 @@
       const teacherId = document.getElementById('teacherSelect').value;
       const rate = parseFloat(document.getElementById('ratePerPeriod').value);
 
-      if (!teacherId || isNaN(rate)) {
-        alert('Vui lòng chọn giáo viên và nhập định mức.');
+      if (!teacherId || isNaN(rate) || rate < 1) {
+        alert('Vui lòng chọn giáo viên và định mức phải là số dương.');
         return;
       }
 
