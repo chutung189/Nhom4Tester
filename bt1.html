@@ -480,13 +480,18 @@
       }
       const name = document.getElementById('facultyName').value.trim();
       const shortName = document.getElementById('facultyShortName').value.trim();
-      // Validate: chỉ cho phép chữ cái (có dấu hoặc không) cho tên và tên viết tắt
+      const dean = document.getElementById('facultyDean').value.trim();
+      // Validate: chỉ cho phép chữ cái (có dấu hoặc không) cho tên, tên viết tắt và trưởng khoa
       if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(name)) {
         alert('Tên khoa chỉ được chứa chữ cái và khoảng trắng!');
         return;
       }
       if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(shortName)) {
         alert('Tên viết tắt khoa chỉ được chứa chữ cái và khoảng trắng!');
+        return;
+      }
+      if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(dean)) {
+        alert('Trưởng khoa chỉ được chứa chữ cái và khoảng trắng!');
         return;
       }
       // Nếu thêm mới, kiểm tra trùng tên hoặc shortName
@@ -501,7 +506,7 @@
         const f = faculties.find(f => f.id === id);
         f.name = name;
         f.shortName = shortName;
-        f.dean = document.getElementById('facultyDean').value;
+        f.dean = dean;
         f.description = document.getElementById('facultyDescription').value;
       } else {
         let maxId = faculties.length ? Math.max(...faculties.map(f => f.id)) : 0;
@@ -509,7 +514,7 @@
           id: maxId + 1,
           name,
           shortName,
-          dean: document.getElementById('facultyDean').value,
+          dean,
           description: document.getElementById('facultyDescription').value
         });
       }
