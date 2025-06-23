@@ -548,6 +548,12 @@
       const email = document.getElementById('emailGV').value.trim();
       const ten = document.getElementById('tenGV').value.trim();
       const sdt = document.getElementById('sdtGV').value.trim();
+      const ma = document.getElementById('maGV').value.trim();
+      // Kiểm tra mã giáo viên đúng định dạng GV + số
+      if (!/^GV\d+$/.test(ma)) {
+        alert('Mã giáo viên phải theo định dạng GV + số, ví dụ: GV001!');
+        return false;
+      }
       // Kiểm tra tên chỉ được chữ cái và khoảng trắng, tối đa 100 ký tự
       if (!ten || ten.length > 100 || !/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(ten)) {
         alert('Tên giáo viên chỉ được chứa chữ cái và khoảng trắng, tối đa 100 ký tự!');
@@ -597,14 +603,13 @@
         bangcap: document.getElementById('bangcapGV').value
       };
       if (index === undefined) {
-        // Thêm mới: kiểm tra trùng tên, sdt, email
+        // Thêm mới: chỉ kiểm tra trùng số điện thoại và email
         const existed = teachers.some(t =>
-          normalize(t.ten) === normalize(gv.ten) ||
           normalize(t.sdt) === normalize(gv.sdt) ||
           normalize(t.email) === normalize(gv.email)
         );
         if (existed) {
-          alert('Đã tồn tại giáo viên với tên, số điện thoại hoặc email này!');
+          alert('Đã tồn tại giáo viên với số điện thoại hoặc email này!');
           return;
         }
         teachers.push(gv);
