@@ -290,7 +290,7 @@
         <div class="table-responsive">
           <table id="facultyTable" class="table table-striped table-bordered align-middle">
             <thead>
-              <tr><th>STT</th><th>Tên đầy đủ</th><th>Tên viết tắt</th><th>Trưởng khoa</th><th>Mô tả</th><th>Hành động</th></tr>
+              <tr><th>STT</th><th>Tên đầy đủ</th><th>Tên viết tắt</th><th>Mô tả</th><th>Hành động</th></tr>
             </thead>
             <tbody id="facultyBody"></tbody>
           </table>
@@ -361,10 +361,6 @@
         <div class="form-group">
           <label>Tên viết tắt:</label>
           <input id="facultyShortName" type="text" class="form-control" value="${data.shortName || ''}">
-        </div>
-        <div class="form-group">
-          <label>Trưởng khoa:</label>
-          <input id="facultyDean" type="text" class="form-control" value="${data.dean || ''}">
         </div>
         <div class="form-group">
           <label>Mô tả:</label>
@@ -480,7 +476,6 @@
       }
       const name = document.getElementById('facultyName').value.trim();
       const shortName = document.getElementById('facultyShortName').value.trim();
-      const dean = document.getElementById('facultyDean').value.trim();
       // Validate: chỉ cho phép chữ cái (có dấu hoặc không) cho tên, tên viết tắt và trưởng khoa
       if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(name)) {
         alert('Tên khoa chỉ được chứa chữ cái và khoảng trắng!');
@@ -488,10 +483,6 @@
       }
       if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(shortName)) {
         alert('Tên viết tắt khoa chỉ được chứa chữ cái và khoảng trắng!');
-        return;
-      }
-      if (!/^([A-Za-zÀ-ỹà-ỹ\s]+)$/.test(dean)) {
-        alert('Trưởng khoa chỉ được chứa chữ cái và khoảng trắng!');
         return;
       }
       // Nếu thêm mới, kiểm tra trùng tên hoặc shortName
@@ -506,7 +497,6 @@
         const f = faculties.find(f => f.id === id);
         f.name = name;
         f.shortName = shortName;
-        f.dean = dean;
         f.description = document.getElementById('facultyDescription').value;
       } else {
         let maxId = faculties.length ? Math.max(...faculties.map(f => f.id)) : 0;
@@ -514,7 +504,6 @@
           id: maxId + 1,
           name,
           shortName,
-          dean,
           description: document.getElementById('facultyDescription').value
         });
       }
@@ -716,7 +705,6 @@
       <td>${i + 1}</td>
       <td>${f.name}</td>
       <td>${f.shortName}</td>
-      <td>${f.dean}</td>
       <td>${f.description}</td>
       <td>
         <button class="btn btn-warning btn-sm" onclick="editFaculty(${f.id})">Sửa</button>
@@ -854,7 +842,6 @@
       <td>${i + 1}</td>
       <td>${f.name}</td>
       <td>${f.shortName}</td>
-      <td>${f.dean}</td>
       <td>${f.description}</td>
       <td>
         <button class="btn btn-warning btn-sm" onclick="editFaculty(${f.id})">Sửa</button>
