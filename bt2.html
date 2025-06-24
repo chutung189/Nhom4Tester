@@ -248,6 +248,7 @@
                     <th>Mã lớp</th>
                     <th>Học phần</th>
                     <th>Số SV</th>
+                    <th>Hệ số lớp</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
@@ -694,6 +695,17 @@
       return `${courseCode}-${String(index).padStart(2, '0')}`;
     }
 
+    function getClassFactor(students) {
+      if (students < 20) return -0.3;
+      if (students < 30) return -0.2;
+      if (students < 40) return -0.1;
+      if (students < 50) return 0;
+      if (students < 60) return 0.1;
+      if (students < 70) return 0.2;
+      if (students < 80) return 0.3;
+      return 0;
+    }
+
     // Sửa openClasses để đồng bộ lên server
     function openClasses() {
       if (!teachers.length) return alert('Chưa có giảng viên trong hệ thống!');
@@ -722,7 +734,7 @@
           alert('Lớp ' + code + ' đã tồn tại!');
           continue;
         }
-        classSections.push({ code, courseCode, students: sv });
+        classSections.push({ code, courseCode, students: sv, classFactor: getClassFactor(sv) });
         added = true;
       }
       if (added) {
@@ -737,11 +749,15 @@
       const table = document.getElementById('classList');
       const select = document.getElementById('classSelect');
       table.innerHTML = select.innerHTML = '';
+      courses.forEach((c, i) => {
+        select.innerHTML += `<option value="${c.code}">${c.name}</option>`;
+      });
       classSections.forEach((c, idx) => {
         table.innerHTML += `<tr>
           <td>${c.code}</td>
           <td>${c.courseCode}</td>
           <td>${c.students}</td>
+          <td>${typeof c.classFactor !== 'undefined' ? c.classFactor : getClassFactor(c.students)}</td>
           <td>
             <button class="btn btn-warning btn-sm" onclick="editClassSection(${idx})"><i class="bi bi-pencil"></i> Sửa</button>
             <button class="btn btn-danger btn-sm" onclick="deleteClassSection(${idx})"><i class="bi bi-trash"></i> Xóa</button>
@@ -760,6 +776,7 @@
       const newSv = prompt(`Nhập lại số sinh viên cho lớp ${c.code}:`, c.students);
       if (newSv !== null && !isNaN(newSv) && Number(newSv) > 0) {
         classSections[idx].students = Number(newSv);
+        classSections[idx].classFactor = getClassFactor(Number(newSv));
         updateClassList();
       } else if (newSv !== null) {
         alert('Số sinh viên phải là số dương!');

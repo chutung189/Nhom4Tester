@@ -247,6 +247,18 @@
       return deg ? parseFloat(deg.heso) || 1.0 : 1.0;
     }
 
+    // Hàm tính hệ số lớp dựa vào số sinh viên
+    function getClassFactor(students) {
+      if (students < 20) return -0.3;
+      if (students < 30) return -0.2;
+      if (students < 40) return -0.1;
+      if (students < 50) return 0;
+      if (students < 60) return 0.1;
+      if (students < 70) return 0.2;
+      if (students < 80) return 0.3;
+      return 0;
+    }
+
     function calculateSalaryForClass() {
       const teacherId = document.getElementById('teacherSelect').value;
       const classCode = document.getElementById('classSelect').value;
@@ -263,7 +275,10 @@
 
       const degreeFactor = getDegreeFactor(teacher);
       const sessions = course ? parseInt(course.sessions) : 0;
-      const total = rate * degreeFactor * sessions;
+      const classFactor = cls ? (typeof cls.classFactor !== 'undefined' ? cls.classFactor : getClassFactor(cls.students)) : 0;
+      const courseFactor = course && course.coeff ? parseFloat(course.coeff) : 1;
+      const quyDoi = sessions * (courseFactor + classFactor);
+      const total = quyDoi * degreeFactor * rate;
 
       const resultDiv = document.getElementById('result');
       const resultContent = document.getElementById('resultContent');
@@ -278,8 +293,20 @@
           <span class="highlight">${classCode} - ${course ? course.name : ''}</span>
         </div>
         <div class="mb-3">
-          <span class="result-value">Số tiết: </span>
+          <span class="result-value">Số tiết thực tế: </span>
           <span class="highlight">${sessions}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Hệ số học phần: </span>
+          <span class="highlight">${courseFactor}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Hệ số lớp: </span>
+          <span class="highlight">${classFactor}</span>
+        </div>
+        <div class="mb-3">
+          <span class="result-value">Số tiết quy đổi: </span>
+          <span class="highlight">${quyDoi}</span>
         </div>
         <div class="mb-3">
           <span class="result-value">Hệ số bằng cấp: </span>
@@ -322,7 +349,10 @@
                 <th>Lớp</th>
                 <th>Học phần</th>
                 <th>Số tiết</th>
-                <th>Hệ số</th>
+                <th>Hệ số học phần</th>
+                <th>Hệ số lớp</th>
+                <th>Số tiết quy đổi</th>
+                <th>Hệ số bằng cấp</th>
                 <th>Thành tiền</th>
               </tr>
             </thead>
@@ -336,7 +366,10 @@
         const course = courses.find(c => c.code === cls.courseCode);
         const degreeFactor = getDegreeFactor(teacher);
         const sessions = course ? parseInt(course.sessions) : 0;
-        const subtotal = rate * degreeFactor * sessions;
+        const classFactor = typeof cls.classFactor !== 'undefined' ? cls.classFactor : getClassFactor(cls.students);
+        const courseFactor = course && course.coeff ? parseFloat(course.coeff) : 1;
+        const quyDoi = sessions * (courseFactor + classFactor);
+        const subtotal = quyDoi * degreeFactor * rate;
         total += subtotal;
 
         html += `
@@ -344,6 +377,9 @@
             <td>${cls.code}</td>
             <td>${course ? course.name : ''}</td>
             <td>${sessions}</td>
+            <td>${courseFactor}</td>
+            <td>${classFactor}</td>
+            <td>${quyDoi}</td>
             <td>${degreeFactor}</td>
             <td>${subtotal.toLocaleString('vi-VN')} VND</td>
           </tr>
